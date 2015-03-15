@@ -1,0 +1,8 @@
+<!ELEMENT config (device)*>
+<!ELEMENT device (ip?, name?, interval?, limit?, maxgraph?, email?)>
+<!ELEMENT ip (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT interval (#PCDATA)>
+<!ELEMENT limit (#PCDATA)>
+<!ELEMENT maxgraph (#PCDATA)>
+<!ELEMENT email (#PCDATA)>

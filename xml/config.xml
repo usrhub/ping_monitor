@@ -1,0 +1,27 @@
+<!DOCTYPE config SYSTEM "device-config.dtd">
+<config>
+	<device>
+		<ip>127.0.0.1</ip>
+		<name>Test machine</name>
+		<interval>355</interval>
+		<limit>37</limit>
+		<maxgraph>500</maxgraph>
+		<email>sadf</email>
+	</device>
+	<device>
+		<ip>127.0.0.1</ip>
+		<name>Test machine 2</name>
+		<interval>355</interval>
+		<limit>37</limit>
+		<maxgraph>500</maxgraph>
+		<email>sadf</email>
+	</device>
+	<device>
+		<ip>127.0.0.1</ip>
+		<name>Test machine 3</name>
+		<interval>355</interval>
+		<limit>37</limit>
+		<maxgraph>500</maxgraph>
+		<email>sadf</email>
+	</device>
+</config>

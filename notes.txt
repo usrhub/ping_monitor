@@ -1,0 +1,56 @@
+Used software:
+	java version "1.8.0_40"
+	Java(TM) SE Runtime Environment (build 1.8.0_40-b25)
+	Java HotSpot(TM) 64-Bit Server VM (build 25.40-b25, mixed mode)
+
+	Eclipse IDE for Java Developers Version: Luna Service Release 1a (4.4.1)
+	
+	Apache Maven 3.0.5
+
+	git version 1.9.1
+
+
+1. generate new maven project with help of howto
+( http://www.mkyong.com/maven/how-to-create-a-java-project-with-maven/ )
+
+	mvn archetype:generate -DgroupId=de.steinerix.ping_monitor -DartifactId=ping_monitor -DarchetypeArtifactId=maven-archetype-quickstart  -DinteractiveMode=false
+
+	mvn eclipse:eclipse
+
+2. initialize local git repo
+
+	~/projects/ping_monitor$ git init
+	Initialisierte leeres Git-Repository in /home/usr/projects/ping_monitor/.git/
+
+3. import "Existing maven project" into eclipse workspace
+
+4. change pom.xml to include JUnit 4.10
+
+	mvn clean:eclipse
+	mvn eclipse:eclipse
+	restart eclipse
+	make sure <scope>test</scope> is set for JUnit or any artifacts only used during test 
+
+5. change pom.xml to inlude mail-api 1.52
+	http://www.tutorialspoint.com/javamail_api/index.htm
+
+	<dependency>
+		<groupId>com.sun.mail</groupId>
+		<artifactId>javax.mail</artifactId>
+		<version>1.5.2</version>
+	</dependency>
+
+
+6. change pom.xml to copy ressource folders (src and test)
+	<build>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/src/test/resources</directory>
+			</testResource>
+		</testResources>
+	</build>
