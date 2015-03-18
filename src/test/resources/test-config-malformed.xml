@@ -1,4 +1,21 @@
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="test-device-config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="test-config.xsd">
+	<!-- smtp configuration -->
+	<!-- securitytype supported: NONE, SSL_TLS and STARTTLS -->
+	<!-- authtype supported: NONE and PASSWORD -->
+	<mail>
+		<enabled>false</enabled>
+		<server>smtp.test.tld</server>
+		<port>587</port>
+		<username>username</username>
+		<password>password</password>
+		<authtype>PASSWORD</authtype>
+		<securitytype>STARTTLS</securitytype>
+		<from>test@test.tld</from>
+	</mail>
+	
+	<!-- device configurations (max. 20 allowed) -->
+	<!-- timeout property is optional --> 
+	<!-- every configuration must be unique -->
 	<device
 		<ip>127.0.0.1</ip>
 		<name>Test machine</name>

@@ -1,4 +1,4 @@
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="device-config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="config.xsd">
 
 	<!-- smtp configuration -->
 	<!-- securitytype supported: NONE, SSL_TLS and STARTTLS -->
@@ -18,30 +18,29 @@
 	<!-- timeout property is optional --> 
 	<!-- every configuration must be unique -->
 	<device>
-		<ip>74.125.136.94</ip>
-		<name>Google</name>
-		<interval>3550</interval>
-		<timeout>100</timeout>
-		<limit>75</limit>
-		<maxgraph>5001</maxgraph>
-		<email>test@test.com</email>
-	</device>
-	<!--
-	<device>
-		<ip>62.138.116.3</ip>
-		<name>Spiegel</name>
-		<interval>1700</interval>
+		<ip>127.0.0.1</ip>
+		<name>Test machine</name>
+		<interval>355</interval>
+		<timeout>300</timeout>
 		<limit>37</limit>
 		<maxgraph>500</maxgraph>
 		<email>test@test.com</email>
 	</device>
 	<device>
-		<ip>93.90.176.170</ip>
+		<ip>127.0.0.1</ip>
+		<name>Test machine 2</name>
+		<interval>355</interval>
+		<limit>37</limit>
+		<maxgraph>500</maxgraph>
+		<email>test@test.com</email>
+	</device>
+	<device>
+		<ip>127.0.0.1</ip>
 		<name>Test machine 3</name>
-		<interval>2500</interval>
+		<interval>355</interval>
 		<limit>37</limit>
 		<maxgraph>500</maxgraph>
 		<email>test@test.com</email>
 	</device>
-	-->
+
 </config>
