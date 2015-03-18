@@ -3,6 +3,7 @@
 		<ip>127.0.0.1</ip>
 		<name>Test machine</name>
 		<interval>355</interval>
+		<timeout>300</timeout>
 		<limit>37</limit>
 		<maxgraph>500</maxgraph>
 		<email>test@test.com</email>

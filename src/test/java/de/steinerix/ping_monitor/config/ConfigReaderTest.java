@@ -18,7 +18,7 @@ public class ConfigReaderTest {
 			XPathExpressionException {
 		ConfigReader config = new ConfigReader(
 				openFile("test-config-valid.xml"));
-		config.read();
+		config.getDeviceConfigs();
 	}
 
 	@Test
@@ -28,15 +28,15 @@ public class ConfigReaderTest {
 
 		ConfigReader config = new ConfigReader(
 				openFile("test-config-valid.xml"));
-		devices = config.read();
+		devices = config.getDeviceConfigs();
 
 		// check complete data set of first entry
 		assertTrue("Test data contains three device entries.",
 				devices.size() == 3);
 		assertTrue(devices.get(0).getAddr() + " does not match 127.0.0.1",
 				devices.get(0).getAddr().getHostAddress().equals("127.0.0.1"));
-		assertTrue(devices.get(0).geteMail() + " does not match test@test.com",
-				devices.get(0).geteMail().getAddress().equals("test@test.com"));
+		assertTrue(devices.get(0).getEmail() + " does not match test@test.com",
+				devices.get(0).getEmail().getAddress().equals("test@test.com"));
 		assertTrue(devices.get(0).getInterval() + " did not match 355", devices
 				.get(0).getInterval() == 355);
 		assertTrue(devices.get(0).getLimit() + " did not match 37", devices
@@ -61,7 +61,7 @@ public class ConfigReaderTest {
 		try {
 			ConfigReader config = new ConfigReader(
 					openFile("test-config-invalid.xml"));
-			config.read();
+			config.getDeviceConfigs();
 			fail();
 		} catch (IllegalStateException e) {
 		}
@@ -74,7 +74,7 @@ public class ConfigReaderTest {
 					.println("Expected output of [Fatal Error] on error stream due to test -");
 			ConfigReader config = new ConfigReader(
 					openFile("test-config-malformed.xml"));
-			config.read();
+			config.getDeviceConfigs();
 			fail();
 		} catch (XPathExpressionException e) {
 

@@ -12,6 +12,7 @@
 			<xsd:element name="ip" type="ipType" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="name" type="nameType" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="interval" type="intervalType" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="timeout" type="timeoutType" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="limit" type="limitType" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="maxgraph" type="maxgraphType" minOccurs="1" maxOccurs="1" />
 			<xsd:element name="email" type="emailType" minOccurs="1" maxOccurs="1" />
@@ -30,6 +31,10 @@
 	</xsd:simpleType>
 
 	<xsd:simpleType name="intervalType">
+		<xsd:restriction base="xsd:integer" />
+	</xsd:simpleType>
+
+	<xsd:simpleType name="timeoutType">
 		<xsd:restriction base="xsd:integer" />
 	</xsd:simpleType>
 

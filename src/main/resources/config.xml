@@ -1,26 +1,47 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="device-config.xsd">
+
+	<!-- smtp configuration -->
+	<!-- securitytype supported: NONE, SSL_TLS and STARTTLS -->
+	<!-- authtype supported: NONE and PASSWORD -->
+	<mail>
+		<enabled>false</enabled>
+		<server>smtp.test.tld</server>
+		<port>587</port>
+		<username>username</username>
+		<password>password</password>
+		<authtype>PASSWORD</authtype>
+		<securitytype>STARTTLS</securitytype>
+		<from>test@test.tld</from>
+	</mail>
+	
+	<!-- device configurations (max. 20 allowed) -->
+	<!-- timeout property is optional --> 
+	<!-- every configuration must be unique -->
 	<device>
-		<ip>127.0.0.1</ip>
-		<name>Test machine</name>
-		<interval>355</interval>
+		<ip>74.125.136.94</ip>
+		<name>Google</name>
+		<interval>3550</interval>
+		<timeout>100</timeout>
+		<limit>75</limit>
+		<maxgraph>5001</maxgraph>
+		<email>test@test.com</email>
+	</device>
+	<!--
+	<device>
+		<ip>62.138.116.3</ip>
+		<name>Spiegel</name>
+		<interval>1700</interval>
 		<limit>37</limit>
 		<maxgraph>500</maxgraph>
 		<email>test@test.com</email>
 	</device>
 	<device>
-		<ip>127.0.0.1</ip>
-		<name>Test machine 2</name>
-		<interval>355</interval>
-		<limit>37</limit>
-		<maxgraph>500</maxgraph>
-		<email>test@test.com</email>
-	</device>
-	<device>
-		<ip>127.0.0.1</ip>
+		<ip>93.90.176.170</ip>
 		<name>Test machine 3</name>
-		<interval>355</interval>
+		<interval>2500</interval>
 		<limit>37</limit>
 		<maxgraph>500</maxgraph>
 		<email>test@test.com</email>
 	</device>
+	-->
 </config>

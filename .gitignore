@@ -1,0 +1,14 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Maven
+log/
+target/
+
+#log
+log.txt
+log.txt.*
+#vim
+*.swp

@@ -25,6 +25,9 @@ import javax.xml.xpath.XPathFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import de.steinerix.ping_monitor.config.MailConfig.AuthType;
+import de.steinerix.ping_monitor.config.MailConfig.SecurityType;
+
 /**
  * Provides a method to read in device settings from a XML configuration file
  * 
@@ -60,17 +63,115 @@ public class ConfigReader {
 	 * Reads the xml config and returns a list of device specific
 	 * configurations.
 	 */
-	public List<DeviceConfig> read() throws XPathExpressionException {
-		log.log(Level.INFO,
-				"Reading config file: " + configFile.getAbsolutePath());
+	public List<DeviceConfig> getDeviceConfigs()
+			throws XPathExpressionException {
+		log.log(Level.INFO, "Reading device configurations from file: "
+				+ configFile.getAbsolutePath());
 
 		ArrayList<DeviceConfig> devices = new ArrayList<DeviceConfig>();
 
 		for (int i = 1; i < countElements(DEVICE_XPATH) + 1; i++) {
 			DeviceConfig device = getDeviceConfig(i);
-			devices.add(device);
+			if (devices.contains(device)) {
+				throw new IllegalStateException(
+						"Device configs should be unique. Please correct XML config. ("
+								+ device.getName() + " "
+								+ device.getAddr().getHostAddress() + ")");
+			} else {
+				devices.add(device);
+			}
+
 		}
 		return devices;
+	}
+
+	/**
+	 * Reads the xml config and returns the mail config
+	 * 
+	 * @throws UnknownHostException
+	 * @throws AddressException
+	 */
+	public MailConfig getMailConfig() {
+		log.log(Level.INFO,
+				"Reading mail config from file: "
+						+ configFile.getAbsolutePath());
+
+		MailConfig config = null;
+
+		try {
+			boolean enabled = (getMailProperty("enabled")).toLowerCase()
+					.equals("true");
+			AuthType authType = AuthType.valueOf(getMailProperty("authtype"));
+			SecurityType securityType = SecurityType
+					.valueOf(getMailProperty("securitytype"));
+			InetAddress server;
+			server = InetAddress.getByName(getMailProperty("server"));
+			InternetAddress from = new InternetAddress(getMailProperty("from"));
+			String username = getMailProperty("username");
+			String password = getMailProperty("password");
+			int port;
+
+			port = Integer.parseInt(getMailProperty("port"));
+
+			config = new MailConfig.Builder().server(server, port, enabled)
+					.type(authType, securityType)
+					.credentials(from, username, password).build();
+		} catch (XPathExpressionException e) {
+			throwIllegalStateExceptionAndLog("Could not read mail property", e);
+		} catch (UnknownHostException e) {
+			throwIllegalStateExceptionAndLog(
+					"Could not retrieve IP of smtp server (Unknown host)", e);
+		} catch (AddressException e) {
+			throwIllegalStateExceptionAndLog(
+					"Email in mail configuration invalid", e);
+		}
+		return config;
+	}
+
+	/**
+	 * Get the device configuration for "&lt;device&gt;" element at specified
+	 * index (1 … length)
+	 * 
+	 * @throws IllegalStateException
+	 */
+	private DeviceConfig getDeviceConfig(int index) {
+		DeviceConfig device = null;
+
+		// retrieve device values from xml file
+		String ip;
+		try {
+			ip = getDeviceProperty(index, "ip");
+			String name = getDeviceProperty(index, "name");
+			int interval = Integer
+					.parseInt(getDeviceProperty(index, "interval"));
+			int limit = Integer.parseInt(getDeviceProperty(index, "limit"));
+
+			String tmpTimeout = getOptionalDeviceProperty(index, "timeout");
+			int timeout = tmpTimeout.equals("") ? interval : Integer
+					.parseInt(tmpTimeout);
+
+			int maxGraph = Integer
+					.parseInt(getDeviceProperty(index, "maxgraph"));
+			String eMail = getDeviceProperty(index, "email");
+
+			// construct new device config
+			device = new DeviceConfig(InetAddress.getByName(ip), name,
+					interval, timeout, limit, maxGraph, new InternetAddress(
+							eMail));
+
+		} catch (XPathExpressionException e) {
+			throwIllegalStateExceptionAndLog("Could not read device property",
+					e);
+		} catch (AddressException e) {
+			throwIllegalStateExceptionAndLog(
+					"Email in device configuration invalid", e);
+		} catch (UnknownHostException e) {
+			throwIllegalStateExceptionAndLog(
+					"Could not retrieve IP of device (Unknown host)", e);
+		}
+
+		return device;
+
 	}
 
 	/**
@@ -101,46 +202,6 @@ public class ConfigReader {
 	}
 
 	/**
-	 * Get the device configuration for "&lt;device&gt;" element at specified
-	 * index (1 … length)
-	 * 
-	 * @throws IllegalStateException
-	 */
-	private DeviceConfig getDeviceConfig(int index) {
-		DeviceConfig device = null;
-
-		// retrieve device values from xml file
-		String ip;
-		try {
-			ip = getDeviceProperty(index, "ip");
-			String name = getDeviceProperty(index, "name");
-			int interval = Integer
-					.parseInt(getDeviceProperty(index, "interval"));
-			int limit = Integer.parseInt(getDeviceProperty(index, "limit"));
-			int maxGraph = Integer
-					.parseInt(getDeviceProperty(index, "maxgraph"));
-			String eMail = getDeviceProperty(index, "email");
-
-			// construct new device config
-			device = new DeviceConfig(InetAddress.getByName(ip), name,
-					interval, limit, maxGraph, new InternetAddress(eMail));
-
-		} catch (XPathExpressionException e) {
-			throwIllegalStateExceptionAndLog("Could not read device property",
-					e);
-		} catch (AddressException e) {
-			throwIllegalStateExceptionAndLog(
-					"Email in device configuration invalid", e);
-		} catch (UnknownHostException e) {
-			throwIllegalStateExceptionAndLog(
-					"Could not retrieve IP of device (Unknown host)", e);
-		}
-
-		return device;
-
-	}
-
-	/**
 	 * Logs the message (severe) and throws an IllegalStateException with
 	 * provided message and cause.
 	 */
@@ -157,11 +218,66 @@ public class ConfigReader {
 	 * @return string representation of property
 	 * @throws XPathExpressionException
 	 */
-	private String getDeviceProperty(int index, String propertyName)
-			throws XPathExpressionException {
-		String expression = DEVICE_XPATH + "[" + index + "]/" + propertyName;
+	private String getProperty(int index, String parentElement,
+			String propertyName) throws XPathExpressionException {
+		String expression = "//" + parentElement + "[" + index + "]/"
+				+ propertyName;
 		String property = (String) xpath.evaluate(expression, source,
 				XPathConstants.STRING);
+		log.log(Level.FINE, parentElement + ": " + index + ", " + propertyName
+				+ ": " + property);
+
+		return property;
+	}
+
+	/**
+	 * Returns a mail property
+	 * 
+	 * @return string representation of property
+	 * @throws XPathExpressionException
+	 */
+	private String getMailProperty(String propertyName)
+			throws XPathExpressionException {
+		return getProperty(1, "mail", propertyName); // only one mail element
+	}
+
+	/**
+	 * Returns a device property for device specified by index (1 … length) and
+	 * tag name (e. g. "email" for &lt;email&gt;)
+	 * 
+	 * @return string representation of property
+	 * @throws XPathExpressionException
+	 */
+	private String getDeviceProperty(int index, String propertyName)
+			throws XPathExpressionException {
+		// String expression = DEVICE_XPATH + "[" + index + "]/" + propertyName;
+		// String property = (String) xpath.evaluate(expression, source,
+		// XPathConstants.STRING);
+		// log.log(Level.FINE, "Device: " + index + ", " + propertyName + ": "
+		// + property);
+
+		return getProperty(index, "device", propertyName);
+	}
+
+	/**
+	 * Returns an optional device property for device specified by index (1 …
+	 * length) and tag name (e. g. "email" for &lt;email&gt;). If property isn't
+	 * present, an empty string is returned.
+	 * 
+	 * @return string representation of optional property - in case it isn't
+	 *         set, the string is empty.
+	 * @throws XPathExpressionException
+	 */
+	private String getOptionalDeviceProperty(int index, String propertyName)
+			throws XPathExpressionException {
+		String expression = DEVICE_XPATH + "[" + index + "]/" + propertyName;
+		String property = "";
+		if (countElements(expression) > 0) {
+			property = (String) xpath.evaluate(expression, source,
+					XPathConstants.STRING);
+
+		}
+
 		log.log(Level.FINE, "Device: " + index + ", " + propertyName + ": "
 				+ property);
 

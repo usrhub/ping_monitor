@@ -7,6 +7,19 @@
 	<version>0.1</version>
 	<name>ping_monitor</name>
 	<url>http://maven.apache.org</url>
+	<repositories>
+		<!-- maven repo on github for third party JARs -->
+		<repository>
+			<id>usrhub-thirdparty-repo</id>
+			<url>https://raw.githubusercontent.com/usrhub/mvn-hub/master</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -19,8 +32,23 @@
 			<artifactId>javax.mail</artifactId>
 			<version>1.5.2</version>
 		</dependency>
-
-		</dependencies>
+		<!-- icmp4 jna -->
+		<dependency>
+			<groupId>org.icmp4j</groupId>
+			<artifactId>icmp4j</artifactId>
+			<version>1017</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>3.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>platform</artifactId>
+			<version>3.5.1</version>
+		</dependency>
+	</dependencies>
 	<build>
 		<pluginManagement>
 			<plugins>
