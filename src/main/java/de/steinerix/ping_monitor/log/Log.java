@@ -32,15 +32,13 @@ public class Log {
 	}
 
 	private static void initLog() {
+		log.log(Level.INFO, "Initialize log");
 		try {
 			log.addHandler(new FileHandler(OUTPUT_FILE_NAME));
 		} catch (IOException e) {
 			String msg = "Couldn't access log file: " + OUTPUT_FILE_NAME;
-			System.err.println(msg);
-			e.printStackTrace();
-			log.warning(msg);
+			log.log(Level.WARNING, msg);
 		}
 
-		log.info("Application start.");
 	}
 }

@@ -29,13 +29,15 @@ import de.steinerix.ping_monitor.config.MailConfig.AuthType;
 import de.steinerix.ping_monitor.config.MailConfig.SecurityType;
 
 /**
- * Provides a method to read in device settings from a XML configuration file
+ * Provides methods to read in device and mail settings from provided XML
+ * configuration file
  * 
  * @author usr
  */
 
 public class ConfigReader {
 	final private String DEVICE_XPATH = "//device";
+
 	private Logger log = Logger.getLogger(ConfigReader.class.getName());
 	private XPath xpath = XPathFactory.newInstance().newXPath();
 	private File configFile;
@@ -45,18 +47,35 @@ public class ConfigReader {
 	 * @param configFile
 	 *            XML Configuration file
 	 * @throws FileNotFoundException
+	 *             if config file could not be found
+	 * @throws SAXException
+	 *             if config validation failed
 	 */
-	public ConfigReader(File configFile) throws FileNotFoundException {
+	public ConfigReader(File configFile) throws FileNotFoundException,
+			SAXException {
 		if (!configFile.exists()) {
-			throw new FileNotFoundException("Configuration file missing. "
-					+ configFile.getAbsolutePath());
+			// we may be executed from within a jar
+			this.configFile = new File(getJarDirectory() + File.separator
+					+ configFile.getName());
+			if (!this.configFile.exists()) {
+				throw new FileNotFoundException("Could not find config file: "
+						+ configFile.getName());
+			}
+		} else { // file is in ordinary working directory present
+			this.configFile = configFile;
 		}
-
-		this.configFile = configFile;
-		source = new InputSource(configFile.getAbsolutePath());
-
+		source = new InputSource(this.configFile.getAbsolutePath());
 		validateConfig();
 
+	}
+
+	/**
+	 * if executed within jar directory this method returns the path where the
+	 * jar is located
+	 */
+	private File getJarDirectory() {
+		return new File(getClass().getProtectionDomain().getCodeSource()
+				.getLocation().getPath()).getParentFile();
 	}
 
 	/**
@@ -119,8 +138,9 @@ public class ConfigReader {
 		} catch (XPathExpressionException e) {
 			throwIllegalStateExceptionAndLog("Could not read mail property", e);
 		} catch (UnknownHostException e) {
-			throwIllegalStateExceptionAndLog(
-					"Could not retrieve IP of smtp server (Unknown host)", e);
+			// warn only in logs - this behaviour is on purpose
+			log.log(Level.WARNING,
+					"Unknown host - Please check your smtp server settings", e);
 		} catch (AddressException e) {
 			throwIllegalStateExceptionAndLog(
 					"Email in mail configuration invalid", e);
@@ -176,8 +196,10 @@ public class ConfigReader {
 
 	/**
 	 * Validates config file according to schema
+	 * 
+	 * @throws SAXException
 	 */
-	private void validateConfig() {
+	private void validateConfig() throws SAXException {
 		log.log(Level.INFO,
 				"Validating config file: " + configFile.getAbsolutePath());
 
@@ -190,14 +212,16 @@ public class ConfigReader {
 			Validator validator = schema.newValidator();
 
 			validator.validate(new StreamSource(configFile.getAbsolutePath()));
-		} catch (XPathExpressionException e) {
+		} catch (XPathExpressionException | IOException e) {
 			String msg = "Could not get schema from: "
 					+ configFile.getAbsolutePath();
 			log.log(Level.WARNING, msg, e);
 
-		} catch (SAXException | IOException e) {
+		} catch (SAXException e) {
+			// log and rethrow intended
 			String msg = "Error validating: " + configFile.getAbsolutePath();
 			log.log(Level.WARNING, msg, e);
+			throw e;
 		}
 	}
 
@@ -250,12 +274,6 @@ public class ConfigReader {
 	 */
 	private String getDeviceProperty(int index, String propertyName)
 			throws XPathExpressionException {
-		// String expression = DEVICE_XPATH + "[" + index + "]/" + propertyName;
-		// String property = (String) xpath.evaluate(expression, source,
-		// XPathConstants.STRING);
-		// log.log(Level.FINE, "Device: " + index + ", " + propertyName + ": "
-		// + property);
-
 		return getProperty(index, "device", propertyName);
 	}
 

@@ -10,12 +10,13 @@ import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class ConfigReaderTest {
 
 	@Test
 	public void shouldReadValidConfig() throws FileNotFoundException,
-			XPathExpressionException {
+			XPathExpressionException, SAXException {
 		ConfigReader config = new ConfigReader(
 				openFile("test-config-valid.xml"));
 		config.getDeviceConfigs();
@@ -23,7 +24,7 @@ public class ConfigReaderTest {
 
 	@Test
 	public void shouldContainTestData() throws FileNotFoundException,
-			XPathExpressionException {
+			XPathExpressionException, SAXException {
 		List<DeviceConfig> devices = new ArrayList<DeviceConfig>();
 
 		ConfigReader config = new ConfigReader(
@@ -63,7 +64,7 @@ public class ConfigReaderTest {
 					openFile("test-config-invalid.xml"));
 			config.getDeviceConfigs();
 			fail();
-		} catch (IllegalStateException e) {
+		} catch (IllegalStateException | SAXException e) {
 		}
 	}
 
@@ -77,16 +78,13 @@ public class ConfigReaderTest {
 			config.getDeviceConfigs();
 			fail();
 		} catch (XPathExpressionException e) {
-
+		} catch (SAXException e) {
 		}
-		// catch (RuntimeException e) {
-		// assertTrue(e.getMessage().equals("Malformed XML config."));
-		// }
 
 	}
 
 	@Test
-	public void shouldThrowExceptionForNonExistingConfig() {
+	public void shouldThrowExceptionForNonExistingConfig() throws SAXException {
 		try {
 			new ConfigReader(openFile("test-config-notexisting.xml"));
 			fail();

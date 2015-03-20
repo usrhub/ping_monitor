@@ -5,7 +5,8 @@ import java.net.InetAddress;
 import javax.mail.internet.InternetAddress;
 
 /**
- * A SMTP Mail configuration
+ * A SMTP Mail configuration. ALL builder methods have to be invoked in order to
+ * build an object.
  * 
  * @author usr
  *
@@ -79,6 +80,7 @@ public class MailConfig {
 			return this;
 		}
 
+		/** build MailConfig */
 		public MailConfig build() {
 			return new MailConfig(this);
 		}
@@ -86,11 +88,12 @@ public class MailConfig {
 	}
 
 	private MailConfig(Builder builder) {
+		// check arguments
 		if (builder.smtpServer == null || builder.authType == null
 				|| builder.securityType == null || builder.from == null
 				|| builder.username == null || builder.password == null) {
 			throw new IllegalStateException(
-					"Not all required parameters of MailConfig set. Please call all builder methods with arguments != null");
+					"Not all required parameters of MailConfig set. Please call ALL builder methods. (arguments must be != null)");
 		} else if (!(builder.authType == AuthType.NONE)
 				&& ("username".equals("") || "password".equals(""))) {
 			throw new IllegalStateException(
@@ -107,9 +110,7 @@ public class MailConfig {
 		from = builder.from;
 	}
 
-	/**
-	 * 
-	 */
+	/** Is mail module enabled */
 	public boolean isEnabled() {
 		return enabled;
 	}

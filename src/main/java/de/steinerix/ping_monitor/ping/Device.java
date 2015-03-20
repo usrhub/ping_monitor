@@ -20,7 +20,7 @@ import de.steinerix.ping_monitor.config.DeviceConfig;
  *
  */
 public class Device implements AsyncCallback<IcmpPingResponse> {
-	private Logger log = Logger.getLogger(Device.class.getName());
+	private final Logger log = Logger.getLogger(Device.class.getName());;
 	private List<DeviceListener> listeners = new ArrayList<DeviceListener>();
 
 	private final DeviceConfig config;
@@ -53,6 +53,9 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 	 * host not reachable) is captured
 	 */
 	public boolean isPending() {
+		if (getLastPing() + (2 * config.getTimeout()) < System
+				.currentTimeMillis())
+			return false;
 		return pendingFlag;
 	}
 
@@ -98,6 +101,8 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 	/**
 	 * Execute a ping command on device (Ping will only be executed if not
 	 * blocked by an already pending ping)
+	 * 
+	 * @throws InterruptedException
 	 */
 	public void ping() {
 		if (isPending()) {
@@ -105,8 +110,9 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 		}
 		setPending();
 		updateLastPing();
+
 		IcmpPingUtil.executePingRequest(pingRequest, this); // call "this" back
-		log(Level.FINE, "Ping ");
+
 	}
 
 	/** Callback implementation for a successful IcmpPingResponse. */
@@ -132,15 +138,26 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 				setAlarm(response);
 			}
 		}
-		System.out.println(IcmpPingUtil.formatResponse(response));
 	}
 
 	/** Callback implementation for a failure IcmpPingResponse. */
 	@Override
 	public void onFailure(Throwable throwable) {
-		throw new RuntimeException(
-				"Unexepcted behaviour of ICMP4J implementation. Please review client code.",
-				throwable);
+		log.log(Level.WARNING, "ICMP4J couldn't handle response", throwable);
+		// construct a dummy response
+		IcmpPingResponse response = new IcmpPingResponse();
+		response.setRtt(0);
+		response.setHost(this.getConfig().getAddr().getHostAddress());
+		response.setTtl(0);
+		response.setErrorMessage(throwable.getMessage());
+		response.setSuccessFlag(false);
+		response.setTimeoutFlag(false);
+		fireReply(new DeviceEvent(this, response));
+		resetPending();
+		if (updateCounter(routingErrors, succesfulPings, limitExceeded)
+				&& !isAlarm()) {
+			setAlarm(response);
+		}
 	}
 
 	/**

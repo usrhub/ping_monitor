@@ -10,8 +10,8 @@ package de.steinerix.ping_monitor.ping;
  */
 
 class Counter {
-	final int LIMIT;
-	int count = 0;
+	private final int LIMIT;
+	private int count = 0;
 
 	/** Initialize counter with Integer.MAX_VALUE as limit */
 	Counter() {

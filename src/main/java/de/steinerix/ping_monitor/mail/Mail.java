@@ -18,12 +18,7 @@ import de.steinerix.ping_monitor.config.MailConfig.AuthType;
 import de.steinerix.ping_monitor.config.MailConfig.SecurityType;
 
 public class Mail {
-	private static Logger log = Logger.getLogger(MailConfig.class.getName());
-
-	//
-	// InetAddress smtpServer, int port,
-	// String username, String password, AuthType authType,
-	// SecurityType securityType, InternetAddress from, InternetAddress to
+	private static Logger log = Logger.getLogger(Mail.class.getName());
 
 	/**
 	 * send message with provided MailConfig, To address, subject and body
@@ -35,6 +30,8 @@ public class Mail {
 
 		log.log(Level.INFO, "Send new message with " + config.getSmtpServer()
 				+ " to " + to.getAddress());
+		log.log(Level.FINE, "Mail auth method: " + config.getAuthType());
+		log.log(Level.FINE, "Mail security method: " + config.getSecurityType());
 
 		Properties properties = new Properties();
 

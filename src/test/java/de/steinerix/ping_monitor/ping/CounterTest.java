@@ -33,8 +33,7 @@ public class CounterTest {
 	@Test
 	public void shouldReset() {
 		Counter counter = new Counter();
-
-		counter.count = 95;
+		count(counter, 95);
 		assertTrue(counter.getCount() == 95); // just in case
 
 		counter.reset();
@@ -47,7 +46,7 @@ public class CounterTest {
 		Counter counter = new Counter();
 
 		// set internal count value
-		counter.count = Integer.MAX_VALUE;
+		count(counter, Integer.MAX_VALUE);
 		assertTrue(counter.getCount() == Integer.MAX_VALUE);
 
 		// assert integer overflow is handled correctly
@@ -61,7 +60,7 @@ public class CounterTest {
 	public void shouldReturnReachedLimit() {
 		Counter counter = new Counter(100);
 
-		counter.count = 99;
+		count(counter, 99);
 		assertTrue(counter.getCount() == 99); // just in case
 		assertTrue("Limit should not be reached", (!counter.isLimitReached()));
 
@@ -72,8 +71,13 @@ public class CounterTest {
 		assertTrue("Limit should be reached", (counter.isLimitReached()));
 
 		counter = new Counter();
-		counter.count = Integer.MAX_VALUE;
+		count(counter, Integer.MAX_VALUE);
 		assertTrue("Limit should be reached", (counter.isLimitReached()));
 	}
 
+	private void count(Counter counter, int value) {
+		for (int i = 0; i < value; i++) {
+			counter.increment();
+		}
+	}
 }

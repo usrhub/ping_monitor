@@ -2,6 +2,8 @@ package de.steinerix.ping_monitor.config;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -16,22 +18,29 @@ import javax.mail.internet.InternetAddress;
 
 public class DeviceConfig {
 
+	final private Logger log;;
 	private InetAddress addr;
 	private String name;
-	private long interval;
+	private int interval;
 	private int timeout;
 	private int limit;
 	private int maxGraph;
 	private InternetAddress email;
 
 	public DeviceConfig(DeviceConfig config) {
+		log = Logger.getLogger(DeviceConfig.class.getName());
 		try {
-			this.addr = InetAddress.getByAddress(
-					config.getAddr().getHostName(), config.getAddr()
-							.getAddress());
+			this.addr = InetAddress
+					.getByAddress((config.getAddr().getAddress()));
 		} catch (UnknownHostException e) {
 			// IP retrieved by InetAddress object
 			// it is safe to assume that it is of valid length
+			log.log(Level.WARNING,
+					"["
+							+ name
+							+ "]: "
+							+ "IP address invalid. This should not happen, please review client code.",
+					e);
 		}
 		this.name = config.getName();
 		this.interval = config.getInterval();
@@ -44,6 +53,12 @@ public class DeviceConfig {
 			// E-Mail retrieved by InternetAddress object
 			// it is safe to assume that it was parsed without additional syntax
 			// checks
+			log.log(Level.WARNING,
+					"["
+							+ name
+							+ "]: "
+							+ "Could not parse email. This should not happen, please review client code.",
+					e);
 		}
 	}
 
@@ -63,20 +78,31 @@ public class DeviceConfig {
 	 * @param eMail
 	 *            InternetAddress object (Can be instantiated by a String)
 	 */
-	public DeviceConfig(InetAddress addr, String name, long interval,
+	public DeviceConfig(InetAddress addr, String name, int interval,
 			int timeout, int limit, int maxGraph, InternetAddress eMail) {
+		log = Logger.getLogger(DeviceConfig.class.getName());
 
 		// check arguments
 		if (addr == null || name == null || eMail == null) {
-			throw new IllegalArgumentException(new NullPointerException());
+			if (name != null) {
+				throwArgumentException("argument may not be null", name);
+			} else {
+				throwArgumentException("argument may not be null", "");
+			}
 		}
 
-		if (interval < 0 || limit < 0 || maxGraph < 0) {
-			throw new IllegalArgumentException("Negative value.");
+		if (interval < 100) {
+			throwArgumentException(
+					"flooding protection: interval should be at least 100ms",
+					name);
+		}
+
+		if (limit < 1) {
+			throwArgumentException("limit should be > 0", name);
 		} else if (maxGraph < limit) {
-			throw new IllegalArgumentException("maxGraph should be >= limit ");
+			throwArgumentException("maxGraph should be >= limit", name);
 		} else if (timeout < limit) {
-			throw new IllegalArgumentException("timeout should be >= limit ");
+			throwArgumentException("timeout should be >= limit", name);
 		}
 
 		// assign values
@@ -106,7 +132,7 @@ public class DeviceConfig {
 	/**
 	 * @return Time in ms defining the interval by which the device is pinged
 	 */
-	public long getInterval() {
+	public int getInterval() {
 		return interval;
 	}
 
@@ -185,4 +211,10 @@ public class DeviceConfig {
 		return true;
 	}
 
+	/**
+	 * throws an IllegalArgumentException with provided message and device name
+	 */
+	private void throwArgumentException(String message, String deviceName) {
+		throw new IllegalArgumentException("[" + deviceName + "]: " + message);
+	}
 }

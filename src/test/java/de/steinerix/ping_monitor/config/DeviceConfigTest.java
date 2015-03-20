@@ -17,8 +17,7 @@ public class DeviceConfigTest {
 		// assert object holds right values
 		InternetAddress eMail = new InternetAddress("daniel@steinerix.de");
 		String ip = "127.0.0.1", name = "Test machine";
-		int limit = 500, timeout = 1000, maxGraph = 5000;
-		long interval = 1000;
+		int limit = 500, timeout = 1000, maxGraph = 5000, interval = 1000;
 
 		DeviceConfig config = new DeviceConfig(InetAddress.getByName(ip), name,
 				interval, timeout, limit, maxGraph, eMail);
@@ -46,13 +45,12 @@ public class DeviceConfigTest {
 		}
 
 		try { // timeout
-			config = new DeviceConfig(InetAddress.getByName(ip), name, interval,
-					-1, limit, maxGraph, eMail);
+			config = new DeviceConfig(InetAddress.getByName(ip), name,
+					interval, -1, limit, maxGraph, eMail);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
 
-		
 		try { // alarm
 			config = new DeviceConfig(InetAddress.getByName(ip), name,
 					interval, timeout, -1, maxGraph, eMail);
