@@ -121,18 +121,20 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 		fireReply(new DeviceEvent(this, response));
 		log.log(Level.FINE, IcmpPingUtil.formatResponse(response));
 		resetPending();
-		if (response.getSuccessFlag() && !response.getTimeoutFlag()) { // fine
-																		// response
+
+		if (response.getSuccessFlag() && !response.getTimeoutFlag()
+				&& response.getRtt() <= config.getLimit()) {
 			if (updateCounter(succesfulPings, limitExceeded, routingErrors)
 					&& isAlarm()) {
 				clearAlarm(response);
 			}
-		} else if (response.getSuccessFlag() && response.getTimeoutFlag()) { // limitExceeded
+		} else if (response.getSuccessFlag() && !response.getTimeoutFlag()
+				&& response.getRtt() > config.getLimit()) {
 			if (updateCounter(limitExceeded, routingErrors, succesfulPings)
 					&& !isAlarm()) {
 				setAlarm(response);
 			}
-		} else if (!response.getSuccessFlag()) { // routing error
+		} else {
 			if (updateCounter(routingErrors, succesfulPings, limitExceeded)
 					&& !isAlarm()) {
 				setAlarm(response);

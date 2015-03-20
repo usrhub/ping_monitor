@@ -5,42 +5,177 @@
 	<!-- authtype supported: NONE and PASSWORD -->
 	<mail>
 		<enabled>false</enabled>
-		<server>smtp.test.tld</server>
+		<server>smtp.domain.tld</server>
 		<port>587</port>
-		<username>username</username>
+		<username>user</username>
 		<password>password</password>
 		<authtype>PASSWORD</authtype>
 		<securitytype>STARTTLS</securitytype>
-		<from>test@test.tld</from>
+		<from>sender@domain.tld</from>
 	</mail>
 	
 	<!-- device configurations (max. 20 allowed) -->
-	<!-- timeout property is optional --> 
-	<!-- every configuration must be unique -->
+	<!-- timeout property is optional (if set, the tag must be included after interval tag --> 
+	<!-- every configuration must be unique by at least one field -->
 	<device>
-		<ip>127.0.0.1</ip>
-		<name>Test machine</name>
-		<interval>355</interval>
-		<timeout>300</timeout>
-		<limit>37</limit>
+		<ip>74.125.136.94</ip>
+		<name>google.de</name>
+		<interval>4000</interval>
+		<timeout>100</timeout>
+		<limit>49</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>193.227.146.12</ip>
+		<name>Frankfurter Allgemeine Zeitung</name>
+		<interval>6000</interval>
+		<limit>50</limit>
 		<maxgraph>500</maxgraph>
-		<email>test@test.com</email>
+		<email>watch@domain.tld</email>
 	</device>
 	<device>
 		<ip>127.0.0.1</ip>
-		<name>Test machine 2</name>
-		<interval>355</interval>
-		<limit>37</limit>
-		<maxgraph>500</maxgraph>
-		<email>test@test.com</email>
+		<name>localhost</name>
+		<interval>100</interval>
+		<limit>1</limit>
+		<maxgraph>5</maxgraph>
+		<email>watch@domain.tld</email>
 	</device>
 	<device>
-		<ip>127.0.0.1</ip>
-		<name>Test machine 3</name>
-		<interval>355</interval>
-		<limit>37</limit>
-		<maxgraph>500</maxgraph>
-		<email>test@test.com</email>
+		<ip>157.166.226.25</ip>
+		<name>cnn.com</name>
+		<interval>5000</interval>
+		<limit>150</limit>
+		<maxgraph>200</maxgraph>
+		<email>watch@domain.tld</email>
 	</device>
-
+	<device>
+		<ip>62.138.116.3</ip>
+		<name>spiegel.de</name>
+		<interval>4000</interval>
+		<limit>60</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>83.125.32.69</ip>
+		<name>ard.de</name>
+		<interval>8000</interval>
+		<limit>50</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>193.99.144.80</ip>
+		<name>heise.de</name>
+		<interval>8000</interval>
+		<limit>50</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+		<device>
+		<ip>106.10.212.24</ip>
+		<name>yahoo.de</name>
+		<interval>8000</interval>
+		<limit>300</limit>
+		<maxgraph>500</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+		<device>
+		<ip>91.197.28.69</ip>
+		<name>ZDF</name>
+		<interval>8000</interval>
+		<limit>50</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+		<device>
+		<ip>212.95.71.227</ip>
+		<name>arte.tv</name>
+		<interval>8000</interval>
+		<limit>80</limit>
+		<maxgraph>120</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+		<device>
+		<ip>204.79.197.200</ip>
+		<name>bing.com</name>
+		<interval>8000</interval>
+		<limit>50</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>134.170.185.46</ip>
+		<name>microsoft.com</name>
+		<interval>8000</interval>
+		<limit>50</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>212.58.244.20</ip>
+		<name>bbc.co.uk</name>
+		<interval>8000</interval>
+		<limit>55</limit>
+		<maxgraph>60</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>152.90.247.44</ip>
+		<name>aftenposten.no</name>
+		<interval>8000</interval>
+		<limit>70</limit>
+		<maxgraph>80</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>54.228.229.113</ip>
+		<name>NZZ</name>
+		<interval>16000</interval>
+		<limit>50</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>195.10.208.211</ip>
+		<name>wikipedia.de</name>
+		<interval>16000</interval>
+		<limit>65</limit>
+		<maxgraph>70</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>91.198.174.192</ip>
+		<name>wikipedia.org</name>
+		<interval>16000</interval>
+		<limit>55</limit>
+		<maxgraph>70</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>198.252.206.140</ip>
+		<name>stackoverflow.com</name>
+		<interval>16000</interval>
+		<limit>130</limit>
+		<maxgraph>150</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+	<device>
+		<ip>198.252.206.140</ip>
+		<name>oracle.com</name>
+		<interval>16000</interval>
+		<limit>180</limit>
+		<maxgraph>180</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
+		<device>
+		<ip>217.13.68.220</ip>
+		<name>zeit.de</name>
+		<interval>16000</interval>
+		<limit>100</limit>
+		<maxgraph>100</maxgraph>
+		<email>watch@domain.tld</email>
+	</device>
 </config>
