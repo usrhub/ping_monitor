@@ -152,7 +152,7 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 		});
 	}
 
-	/** Returns a formatted representation of vlaue (provide in ms). */
+	/** Returns a formatted representation of value (provide in ms). */
 	private String formatMilliseconds(int value) {
 		if (value >= 3600 * 1000) { // as hours
 			return round(value / (3600 * 1000.0)) + "h";
