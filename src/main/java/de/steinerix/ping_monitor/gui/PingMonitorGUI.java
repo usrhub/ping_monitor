@@ -1,6 +1,7 @@
 package de.steinerix.ping_monitor.gui;
 
 import java.net.InetAddress;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -100,8 +101,8 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 		// Axis
 		NumberAxis xAxis = new NumberAxis();
 
-		xAxis.setLabel("limit: " + limit + "ms / interval: "
-				+ formatInterval(interval));
+		xAxis.setLabel("lim: " + formatMilliseconds(limit) + " intvl: "
+				+ formatMilliseconds(interval));
 
 		xAxis.setStyle("-fx-font-size:10px;"); // label font size
 		xAxis.setTickLabelFont(new Font(8)); // tick label font size
@@ -110,8 +111,8 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 
 		// PingChart
 		PingChart pingChart = new PingChart(xAxis, yAxis, 15, maxGraph);
-		pingChart.setMaxHeight(80);
-		pingChart.setMaxWidth(100);
+		pingChart.setMaxHeight(160);
+		pingChart.setMaxWidth(200);
 		pingChart.setAnimated(false);
 
 		// Labels
@@ -151,21 +152,23 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 		});
 	}
 
-	/** Returns a formatted representation of interval (provide in ms). */
-	private String formatInterval(int interval) {
-		String formattedInterval;
-		if (interval > 3600 * 1000) { // as hours
-			formattedInterval = (interval / (3600 * 1000L)) + "h";
-		}
-		if (interval > 60 * 1000) { // as minutes
-			formattedInterval = (interval / (3600 * 1000L)) + "h";
-		}
-		if (interval > 1000) { // as seconds
-			formattedInterval = (interval / 1000L) + "s";
+	/** Returns a formatted representation of vlaue (provide in ms). */
+	private String formatMilliseconds(int value) {
+		if (value >= 3600 * 1000) { // as hours
+			return round(value / (3600 * 1000.0)) + "h";
+		} else if (value >= 60 * 1000) { // as minutes
+			return round(value / (60 * 1000.0)) + "min";
+		} else if (value >= 1000) { // as seconds
+			return (value / 1000) + "s";
 		} else { // as milliseconds
-			formattedInterval = interval + "ms";
+			return value + "ms";
 		}
-		return formattedInterval;
+	}
+
+	/** format double value with 0.# */
+	private String round(double value) {
+		// fraction part should be optional and rounded to one digit
+		return new DecimalFormat("0.#").format(value);
 	}
 
 	/** abort application */
