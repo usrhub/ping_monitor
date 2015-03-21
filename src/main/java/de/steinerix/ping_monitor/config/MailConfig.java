@@ -88,16 +88,18 @@ public class MailConfig {
 	}
 
 	private MailConfig(Builder builder) {
-		// check arguments
-		if (builder.smtpServer == null || builder.authType == null
-				|| builder.securityType == null || builder.from == null
-				|| builder.username == null || builder.password == null) {
-			throw new IllegalStateException(
-					"Not all required parameters of MailConfig set. Please call ALL builder methods. (arguments must be != null)");
-		} else if (!(builder.authType == AuthType.NONE)
-				&& ("username".equals("") || "password".equals(""))) {
-			throw new IllegalStateException(
-					"Password and username required with this AuthType.");
+		// check arguments - allow invalid settings if mail is disabled
+		if (builder.enabled) {
+			if (builder.smtpServer == null || builder.authType == null
+					|| builder.securityType == null || builder.from == null
+					|| builder.username == null || builder.password == null) {
+				throw new IllegalStateException(
+						"Not all required parameters of MailConfig set. Please call ALL builder methods. (arguments must be != null)");
+			} else if (!(builder.authType == AuthType.NONE)
+					&& ("username".equals("") || "password".equals(""))) {
+				throw new IllegalStateException(
+						"Password and username required with this AuthType.");
+			}
 		}
 
 		enabled = builder.enabled;

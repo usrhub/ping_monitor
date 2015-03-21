@@ -123,8 +123,24 @@ public class ConfigReader {
 			AuthType authType = AuthType.valueOf(getMailProperty("authtype"));
 			SecurityType securityType = SecurityType
 					.valueOf(getMailProperty("securitytype"));
-			InetAddress server;
-			server = InetAddress.getByName(getMailProperty("server"));
+			InetAddress server = null;
+			try {
+				server = InetAddress.getByName(getMailProperty("server"));
+			} catch (UnknownHostException e) {
+				// warn in logs and deactivate mail- this behaviour is
+				// intentional
+
+				if (enabled) {
+					log.log(Level.WARNING,
+							"mail disabled - please check your smtp settings (unknown host)",
+							e);
+				} else { // if mail is disabled user probably doesn't care
+							// anyways
+					log.log(Level.WARNING, "smtp settings (unknown host)");
+				}
+
+				enabled = false;
+			}
 			InternetAddress from = new InternetAddress(getMailProperty("from"));
 			String username = getMailProperty("username");
 			String password = getMailProperty("password");
@@ -137,10 +153,6 @@ public class ConfigReader {
 					.credentials(from, username, password).build();
 		} catch (XPathExpressionException e) {
 			throwIllegalStateExceptionAndLog("Could not read mail property", e);
-		} catch (UnknownHostException e) {
-			// warn only in logs - this behaviour is on purpose
-			log.log(Level.WARNING,
-					"Unknown host - Please check your smtp server settings", e);
 		} catch (AddressException e) {
 			throwIllegalStateExceptionAndLog(
 					"Email in mail configuration invalid", e);
