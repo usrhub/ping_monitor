@@ -15,7 +15,7 @@ This software makes use of ICMP4J, available under LGPL: http://www.icmp4j.org
 	mvn exec:java -Dexec.mainClass=de.steinerix.ping_monitor.gui.PingMonitorGUI
 
 You can import the project as an existing maven project to eclipse.
-Chose de.steinerix.ping_monitor.gui.PingMonitorGUI for your RunConfiguration.
+Choose de.steinerix.ping_monitor.gui.PingMonitorGUI for your RunConfiguration.
 
 Before editing the config.xml take a look at the comments, otherwise validation
  will help you maintain a valid config :-)

@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.application.Platform;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.xml.xpath.XPathExpressionException;
@@ -49,24 +51,35 @@ public class PingMonitor {
 	 * Ping Monitor to interact with the GUI
 	 * 
 	 * @param plotOutput
-	 * @throws InterruptedException
-	 *             if ping driver has been interrupted
-	 * @throws SAXException
-	 *             if config file could not be validated
-	 */
-	public void pingMonitor(PlotInterface plotOutput)
-			throws InterruptedException, SAXException {
-		this.plotOutput = plotOutput;
+	 * */
+	public PingMonitor(PlotInterface plotOutput) {
+		try {
+			this.plotOutput = plotOutput;
 
-		Log.init(Level.INFO);
-		log.log(Level.INFO, "Start Ping Monitor");
+			Log.init(Level.INFO);
+			log.log(Level.INFO, "Start Ping Monitor");
 
-		final String configFileName = "config.xml";
-		readConfig(configFileName);
+			final String configFileName = "config.xml";
+			readConfig(configFileName);
 
-		pingDriver = new PingDriver(); // start ping driver
+			pingDriver = new PingDriver(); // start ping driver
 
-		addDevices();
+			addDevices();
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "Uncaught exception ", e);
+			shutdown(1);
+		}
+	}
+
+	/** Shutdown application with a System.exit call */
+	public void shutdown(int exitCode) {
+		if (exitCode == 0) {
+			log.log(Level.INFO, "Exit application with code " + exitCode);
+		} else {
+			log.log(Level.SEVERE, "Abort application with code " + exitCode);
+		}
+		Platform.exit();
+		System.exit(exitCode);
 	}
 
 	/**
@@ -133,12 +146,8 @@ public class PingMonitor {
 		pingDriver.registerDevice(device);
 	}
 
-	/**
-	 * read config
-	 * 
-	 * @throws SAXException
-	 */
-	private void readConfig(String configFileName) throws SAXException {
+	/** read config */
+	private void readConfig(String configFileName) {
 		deviceConfigs = new ArrayList<DeviceConfig>();
 		ConfigReader config = null;
 
@@ -147,11 +156,18 @@ public class PingMonitor {
 					"/" + configFileName).getFile()));
 		} catch (FileNotFoundException e) {
 			log.log(Level.SEVERE, "Config file not found: " + configFileName, e);
+			shutdown(1);
+		} catch (SAXException e) {
+			log.log(Level.SEVERE, "Error reading configuration: "
+					+ configFileName, e);
+			shutdown(1);
 		}
 		try {
 			deviceConfigs = config.getDeviceConfigs();
 		} catch (XPathExpressionException e) {
-			log.log(Level.SEVERE, "Error parsing config: " + configFileName, e);
+			log.log(Level.SEVERE, "Error reading configuration: "
+					+ configFileName, e);
+			shutdown(1);
 		}
 
 		mailConfig = config.getMailConfig();

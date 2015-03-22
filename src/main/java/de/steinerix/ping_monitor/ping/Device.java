@@ -101,8 +101,6 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 	/**
 	 * Execute a ping command on device (Ping will only be executed if not
 	 * blocked by an already pending ping)
-	 * 
-	 * @throws InterruptedException
 	 */
 	public void ping() {
 		if (isPending()) {

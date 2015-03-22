@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.xml.sax.SAXException;
-
 import de.steinerix.ping_monitor.PingMonitor;
 import de.steinerix.ping_monitor.PingResponse;
 import de.steinerix.ping_monitor.PlotInterface;
@@ -57,22 +55,16 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 		});
 
 		// start application
-		PingMonitor monitor = new PingMonitor();
-		try {
-			monitor.pingMonitor(this);
-		} catch (InterruptedException e) {
-			exit(e);
-		} catch (SAXException e) {
-			exit(e);
-		}
+		PingMonitor monitor = new PingMonitor(this);
 
-		// ensure application gets exited if window is closed
+		// ensure application is shutdown when window gets closed
 		arg0.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent t) {
-				exit(0);
+				monitor.shutdown(0);
 			}
 		});
+
 	}
 
 	// provide interface for ping monitor
@@ -171,17 +163,4 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 		return new DecimalFormat("0.#").format(value);
 	}
 
-	/** abort application */
-	private void exit(Exception e) {
-		log.log(Level.SEVERE, "Aborting application", e);
-		Platform.exit();
-		exit(1);
-	}
-
-	/** exit application */
-	private void exit(int exitCode) {
-		log.log(Level.INFO, "Exit application with code " + exitCode);
-		Platform.exit();
-		System.exit(exitCode);
-	}
 }

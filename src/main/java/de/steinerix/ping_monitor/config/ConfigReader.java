@@ -92,10 +92,11 @@ public class ConfigReader {
 		for (int i = 1; i < countElements(DEVICE_XPATH) + 1; i++) {
 			DeviceConfig device = getDeviceConfig(i);
 			if (devices.contains(device)) {
-				throw new IllegalStateException(
-						"Device configs should be unique. Please correct XML config. ("
-								+ device.getName() + " "
-								+ device.getAddr().getHostAddress() + ")");
+				String message = "Device configs should be unique. Please correct XML config. ("
+						+ device.getName()
+						+ " "
+						+ device.getAddr().getHostAddress() + ")";
+				throw new IllegalStateException(message);
 			} else {
 				devices.add(device);
 			}
@@ -123,39 +124,40 @@ public class ConfigReader {
 			AuthType authType = AuthType.valueOf(getMailProperty("authtype"));
 			SecurityType securityType = SecurityType
 					.valueOf(getMailProperty("securitytype"));
+
 			InetAddress server = null;
 			try {
 				server = InetAddress.getByName(getMailProperty("server"));
 			} catch (UnknownHostException e) {
-				// warn in logs and deactivate mail- this behaviour is
-				// intentional
-
+				String message = "Please check your mail configuration (smtp server: host unknown)";
 				if (enabled) {
-					log.log(Level.WARNING,
-							"mail disabled - please check your smtp settings (unknown host)",
-							e);
-				} else { // if mail is disabled user probably doesn't care
-							// anyways
-					log.log(Level.WARNING, "smtp settings (unknown host)");
+					throw new IllegalStateException(message, e);
+				} else { // just warn if mail is deactivated
+					log.log(Level.WARNING, message);
 				}
-
-				enabled = false;
 			}
-			InternetAddress from = new InternetAddress(getMailProperty("from"));
+
+			InternetAddress from = null;
+			try {
+				from = new InternetAddress(getMailProperty("from"));
+			} catch (AddressException e) {
+				String message = "Please check your mail configuration (from email: invalid)";
+				if (enabled) {
+					throw new IllegalStateException(message, e);
+				} else { // just warn if mail is deactivated
+					log.log(Level.WARNING, message);
+				}
+			}
+
 			String username = getMailProperty("username");
 			String password = getMailProperty("password");
-			int port;
-
-			port = Integer.parseInt(getMailProperty("port"));
+			int port = Integer.parseInt(getMailProperty("port"));
 
 			config = new MailConfig.Builder().server(server, port, enabled)
 					.type(authType, securityType)
 					.credentials(from, username, password).build();
 		} catch (XPathExpressionException e) {
-			throwIllegalStateExceptionAndLog("Could not read mail property", e);
-		} catch (AddressException e) {
-			throwIllegalStateExceptionAndLog(
-					"Email in mail configuration invalid", e);
+			throw new IllegalStateException("Could not read mail property", e);
 		}
 		return config;
 	}
@@ -192,13 +194,12 @@ public class ConfigReader {
 							eMail));
 
 		} catch (XPathExpressionException e) {
-			throwIllegalStateExceptionAndLog("Could not read device property",
-					e);
+			throw new IllegalStateException("Could not read device property", e);
 		} catch (AddressException e) {
-			throwIllegalStateExceptionAndLog(
+			throw new IllegalStateException(
 					"Email in device configuration invalid", e);
 		} catch (UnknownHostException e) {
-			throwIllegalStateExceptionAndLog(
+			throw new IllegalStateException(
 					"Could not retrieve IP of device (Unknown host)", e);
 		}
 
@@ -236,16 +237,6 @@ public class ConfigReader {
 			throw e;
 		}
 	}
-
-	/**
-	 * Logs the message (severe) and throws an IllegalStateException with
-	 * provided message and cause.
-	 */
-	private void throwIllegalStateExceptionAndLog(String message,
-			Throwable cause) {
-		log.log(Level.SEVERE, message, cause);
-		throw new IllegalStateException(message, cause);
-	};
 
 	/**
 	 * Returns a device property for device specified by index (1 … length) and
