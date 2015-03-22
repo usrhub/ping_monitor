@@ -36,7 +36,7 @@ important events and error messages in a log file.
  git clone https://github.com/usrhub/ping_monitor.git
 
 2. build project
- mvn build
+ mvn install
 
 3a) run application
  mvn exec:java -Dexec.mainClass=de.steinerix.ping_monitor.gui.PingMonitorGUI
