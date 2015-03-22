@@ -143,7 +143,9 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 	/** Callback implementation for a failure IcmpPingResponse. */
 	@Override
 	public void onFailure(Throwable throwable) {
-		log.log(Level.WARNING, "ICMP4J couldn't handle response", throwable);
+		log.log(Level.WARNING,
+				"ICMP4J couldn't handle response " + config.getName() + " ("
+						+ config.getAddr().getHostAddress());
 		// construct a dummy response
 		IcmpPingResponse response = new IcmpPingResponse();
 		response.setRtt(0);

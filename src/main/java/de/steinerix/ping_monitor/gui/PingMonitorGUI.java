@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class PingMonitorGUI extends Application implements PlotInterface {
-	final private Logger log = Logger.getLogger(PingMonitorGUI.class.getName());;
+	private final Logger log = Logger.getLogger(PingMonitorGUI.class.getName());
 	private HashMap<Integer, PingChart> pingCharts = new HashMap<Integer, PingChart>();
 	private GridPane pingChartGrid;
 	private final int MAX_PING_CHARTS = 20;
@@ -41,13 +41,11 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 			public void run() {
 				// basic GUI layout etc.
 				log.log(Level.INFO, "Initialize GUI");
-				arg0.setTitle("Ping Monitor");
+				arg0.setTitle("Ping Monitor - Watch your digital neighbourhood 0.2"); // :-)
 				pingChartGrid = new GridPane();
 				Scene scene = new Scene(pingChartGrid);
-				arg0.setMinWidth(1024);
-				arg0.setMinHeight(768);
-				arg0.setMaxWidth(1024);
-				arg0.setMaxHeight(768);
+				arg0.setMinWidth(1000);
+				arg0.setMinHeight(715);
 
 				arg0.setScene(scene);
 				arg0.show();
@@ -102,9 +100,9 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 		NumberAxis yAxis = new NumberAxis();
 
 		// PingChart
-		PingChart pingChart = new PingChart(xAxis, yAxis, 15, maxGraph);
-		pingChart.setMaxHeight(160);
-		pingChart.setMaxWidth(200);
+		int displayedValues = 15;
+		PingChart pingChart = new PingChart(xAxis, yAxis, displayedValues,
+				maxGraph);
 		pingChart.setAnimated(false);
 
 		// Labels
