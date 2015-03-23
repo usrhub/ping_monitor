@@ -45,7 +45,7 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 				pingChartGrid = new GridPane();
 				Scene scene = new Scene(pingChartGrid);
 				arg0.setMinWidth(1000);
-				arg0.setMinHeight(715);
+				arg0.setMinHeight(755);
 
 				arg0.setScene(scene);
 				arg0.show();
