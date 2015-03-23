@@ -25,6 +25,7 @@ import javafx.stage.WindowEvent;
 public class PingMonitorGUI extends Application implements PlotInterface {
 	private final Logger log = Logger.getLogger(PingMonitorGUI.class.getName());
 	private HashMap<Integer, PingChart> pingCharts = new HashMap<Integer, PingChart>();
+	private Stage stage;
 	private GridPane pingChartGrid;
 	private final int MAX_PING_CHARTS = 20;
 	private final int CHART_COLUMNS = 5;
@@ -39,16 +40,14 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
+				stage = arg0;
 				// basic GUI layout etc.
 				log.log(Level.INFO, "Initialize GUI");
 				arg0.setTitle("Ping Monitor - Watch your digital neighbourhood 0.2"); // :-)
 				pingChartGrid = new GridPane();
 				Scene scene = new Scene(pingChartGrid);
-				arg0.setMinWidth(1000);
-				arg0.setMinHeight(755);
-
-				arg0.setScene(scene);
-				arg0.show();
+				stage.setScene(scene);
+				stage.show();
 			}
 		});
 
@@ -88,6 +87,7 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 	/** Adds a new PingChart to GUI */
 	private PingChart addPingChart(String name, InetAddress ip, int maxGraph,
 			int interval, int limit, int row, int column) {
+
 		// Axis
 		NumberAxis xAxis = new NumberAxis();
 
@@ -120,12 +120,31 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 
 			@Override
 			public void run() {
+				growWindow(column, row);
+
 				vBox.getChildren().addAll(labelName, labelIp, pingChart);
 				pingChartGrid.add(vBox, column, row);
 			}
 		});
 
 		return pingChart;
+	}
+
+	/** grow window according to displayed number of charts */
+	private void growWindow(int column, int row) {
+		if (column == 0) { // increase height for each new row
+			int minChartHeight = 205;
+			double newHeight = minChartHeight + stage.getMinHeight();
+			stage.setMinHeight(newHeight);
+			stage.setHeight(newHeight);
+		}
+
+		if (row == 0) { // increase width for each column (in first row)
+			int minChartWidth = 205;
+			double newWidth = minChartWidth + stage.getMinWidth();
+			stage.setMinWidth(newWidth);
+			stage.setWidth(newWidth);
+		}
 	}
 
 	// provide interface for ping monitor
