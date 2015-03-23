@@ -39,7 +39,7 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 		this.config = new DeviceConfig(config);
 		pingRequest = IcmpPingUtil.createIcmpPingRequest();
 		pingRequest.setHost(config.getAddr().getHostAddress());
-		pingRequest.setTimeout(config.getTimeout());
+		pingRequest.setTimeout(getTimeout());
 	}
 
 	/** Returns a copy of the device configuration */
@@ -221,6 +221,18 @@ public class Device implements AsyncCallback<IcmpPingResponse> {
 		for (Iterator<DeviceListener> iterator = listeners.iterator(); iterator
 				.hasNext();) {
 			iterator.next().clear(event);
+		}
+	}
+
+	/** Get the timeout */
+	private int getTimeout() {
+		final int defaultTimeout = 5000;
+		int timeout = config.getTimeout(), interval = config.getInterval();
+
+		if (timeout == 0) { // no timeout set
+			return interval < defaultTimeout ? interval : defaultTimeout;
+		} else {
+			return interval;
 		}
 	}
 

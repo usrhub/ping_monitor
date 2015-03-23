@@ -181,8 +181,7 @@ public class ConfigReader {
 			int limit = Integer.parseInt(getDeviceProperty(index, "limit"));
 
 			String tmpTimeout = getOptionalDeviceProperty(index, "timeout");
-			int timeout = tmpTimeout.equals("") ? interval : Integer
-					.parseInt(tmpTimeout);
+			int timeout = tmpTimeout.equals("") ? 0 : Integer.parseInt(tmpTimeout);
 
 			int maxGraph = Integer
 					.parseInt(getDeviceProperty(index, "maxgraph"));

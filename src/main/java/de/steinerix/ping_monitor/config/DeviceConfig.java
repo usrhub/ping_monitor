@@ -101,7 +101,7 @@ public class DeviceConfig {
 			throwArgumentException("limit should be > 0", name);
 		} else if (maxGraph < limit) {
 			throwArgumentException("maxGraph should be >= limit", name);
-		} else if (timeout < limit) {
+		} else if (timeout != 0 && timeout < limit) { // if 0, timeout not set
 			throwArgumentException("timeout should be >= limit", name);
 		}
 
