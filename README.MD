@@ -1,4 +1,4 @@
-# Ping Monitor - Watch your digital neighbourhood
+# Ping Monitor - _Watch your digital neighbourhood_
 
 This "Ping Monitor" is not intended nor ready for production. Use at
 your own risk. Don't abuse this tool for flooding.
@@ -24,9 +24,8 @@ state is cleared after three succeeding pings)
 important events and error messages in a log file.
 
 ## Tested environments
-
-- Xubuntu 14.04 (64 Bit), Java 8 - [screenshot](https://github.com/usrhub/ping_monitor/blob/master/sreenshot.jpg)
-- Win 7 (32 Bit) within a VirtualBox, Java 8 - [screenshot](https://github.com/usrhub/ping_monitor/blob/master/sreenshot-windows.jpg)
+- Xubuntu 14.04 (64 Bit), Java 8 - [screenshot](https://raw.githubusercontent.com/usrhub/ping_monitor/master/sreenshot.jpg)
+- Win 7 (32 Bit) within a VirtualBox, Java 8 - [screenshot](https://raw.githubusercontent.com/usrhub/ping_monitor/master/sreenshot-windows.jpg)
 
 ## Run ping monitor
 
