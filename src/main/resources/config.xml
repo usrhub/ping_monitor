@@ -20,7 +20,7 @@
 	<device>
 		<ip>74.125.136.94</ip>
 		<name>google.de</name>
-		<interval>4000</interval>
+		<interval>4500</interval>
 		<timeout>100</timeout>
 		<limit>49</limit>
 		<maxgraph>100</maxgraph>

@@ -168,7 +168,7 @@ public class PingMonitorGUI extends Application implements PlotInterface {
 		} else if (value >= 60 * 1000) { // as minutes
 			return round(value / (60 * 1000.0)) + "min";
 		} else if (value >= 1000) { // as seconds
-			return (value / 1000) + "s";
+			return (round(value / 1000.0)) + "s";
 		} else { // as milliseconds
 			return value + "ms";
 		}
