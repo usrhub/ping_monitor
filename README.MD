@@ -44,7 +44,7 @@ important events and error messages in a log file.
   - start with: java -jar ping_monitor-0.2-jar-with-dependencies.jar
 
 5. configuration
-  - configuration is done within config.xml
+  - configuration is done within [config.xml](https://github.com/usrhub/ping_monitor/blob/master/src/main/resources/config.xml)
   - obey comments
 
 6. import to eclipse
