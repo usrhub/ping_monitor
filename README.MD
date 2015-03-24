@@ -7,6 +7,15 @@ Copyright 2015 All rights reserved.
 
 This software makes use of ICMP4J http://www.icmp4j.org
 
+## Features
+
+  - Monitor up to 20 IPs
+  - Define individual limits for each device
+  - e-mail notification
+  - GUI with live graphs
+  - Can be run headless
+  - Logs
+
 ## Description
 
 "Ping Monitor" enables you to watch up to 20 IPs for availability and
